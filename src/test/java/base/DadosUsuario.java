@@ -1,0 +1,44 @@
+package base;
+
+import com.github.javafaker.Faker;
+
+public class DadosUsuario {
+
+    private String nomeCompleto;
+    private String email;
+    private String cpf;
+    private String nomeUsuario;
+    private String senha;
+    private String empresa;
+    private String uf;
+    private String perfil;
+    private String poloNome;
+    private String poloValue;
+
+    // Construtor
+    public DadosUsuario(String nomeCompleto, String email, String cpf, String nomeUsuario, String senha,
+                        String empresa, String uf, String perfil, String poloNome, String poloValue) {
+        this.nomeCompleto = nomeCompleto;
+        this.email = email;
+        this.cpf = cpf;
+        this.nomeUsuario = nomeUsuario;
+        this.senha = senha;
+        this.empresa = empresa;
+        this.uf = uf;
+        this.perfil = perfil;
+        this.poloNome = poloNome;
+        this.poloValue = poloValue;
+    }
+
+    // Crie os métodos 'get' para acessar os dados
+    public String getNomeCompleto() { return nomeCompleto; }
+    public String getEmail() { return email; }
+    public String getCpf() { return cpf; }
+    public String getNomeUsuario() { return nomeUsuario; }
+    public String getSenha() { return senha; }
+    public String getEmpresa() { return empresa; }
+    public String getUf() { return uf; }
+    public String getPerfil() { return perfil; }
+    public String getPoloNome() { return poloNome; }
+    public String getPoloValue() { return poloValue; }
+}
