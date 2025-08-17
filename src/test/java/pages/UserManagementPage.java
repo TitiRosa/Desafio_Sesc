@@ -364,6 +364,56 @@ public class UserManagementPage {
         System.out.println("E-mail do usuário '" + nomeUsuario + "' atualizado para: " + novoEmail);
     }
 
+    public String alterarStatusUsuarioPorNome(String nomeUsuario, boolean ativo, String poloNome, String poloValue) {
+        // 1. Buscar o usuário na tabela pelo nome
+        wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(linhasUsuarios));
+        List<WebElement> linhas = driver.findElements(linhasUsuarios);
+        String idUsuario = null;
+
+        for (WebElement linha : linhas) {
+            String nome = linha.findElement(By.xpath("td[1]")).getText();
+            if (nome.equals(nomeUsuario)) {
+                WebElement btnEditar = linha.findElement(By.cssSelector("a.bt-editar"));
+                String onclick = btnEditar.getAttribute("onclick"); // ex: editarUsuario('3337')
+                idUsuario = onclick.replaceAll("\\D+", "");
+                btnEditar.click();
+                break;
+            }
+        }
+
+        if (idUsuario == null) {
+            throw new RuntimeException("Usuário não encontrado na tabela: " + nomeUsuario);
+        }
+
+        // 2. Abrir o dropdown Material Select de Ativo/Inativo
+        By ativoInativoContainer = By.id("ms-editAtivoInativo-0");
+        WebElement container = wait.until(ExpectedConditions.elementToBeClickable(ativoInativoContainer));
+        container.click();
+
+        // 3. Selecionar a opção correta (Ativo/Inativo)
+        String valor = ativo ? "true" : "false";
+        By optionLocator = By.cssSelector("#ms-editAtivoInativo-0 .msOption[data-ms-value='" + valor + "']");
+        WebElement option = wait.until(ExpectedConditions.elementToBeClickable(optionLocator));
+        option.click();
+        System.out.println("Usuário '" + nomeUsuario + "' marcado como " + (ativo ? "Ativo" : "Inativo") + ".");
+
+        // 4. Selecionar o polo, chamando o método existente sem alteração
+        if (poloNome != null && !poloNome.isEmpty()) {
+            selectPoloCustom(poloNome, poloValue); // aqui usamos o método original
+        }
+
+        // 5. Clicar no botão Salvar usando JavascriptExecutor
+        WebElement salvar = wait.until(ExpectedConditions.presenceOfElementLocated(salvarButton));
+        js.executeScript("arguments[0].click();", salvar);
+
+        // 6. Esperar e retornar a mensagem de sucesso
+        WebElement message = wait.until(ExpectedConditions.visibilityOfElementLocated(successMessage));
+        String actualMessageText = message.getText().trim();
+        System.out.println("Mensagem de sucesso encontrada: " + actualMessageText);
+
+        return actualMessageText;
+    }
+
 
 
 }
