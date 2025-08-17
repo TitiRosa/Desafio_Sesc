@@ -48,16 +48,16 @@ public class HomePage {
             throw e;
         }
     }
-//    public void clicarBuscarUsuário() {
-//        try {
-//            WebElement opcao = wait.until(ExpectedConditions.elementToBeClickable(buscar));
-//            opcao.click();
-//            System.out.println("Opção de Gerenciamento de Usuários clicada com sucesso.");
-//        } catch (Exception e) {
-//            System.err.println("Erro ao clicar em Gerenciamento de Usuários: " + e.getMessage());
-//            throw e;
-//        }
-//    }
+    public void clicarBuscarUsuário() {
+        try {
+            WebElement opcao = wait.until(ExpectedConditions.elementToBeClickable(buscar));
+            opcao.click();
+            System.out.println("Opção de Gerenciamento de Usuários clicada com sucesso.");
+        } catch (Exception e) {
+            System.err.println("Erro ao clicar em Gerenciamento de Usuários: " + e.getMessage());
+            throw e;
+        }
+    }
     public void clicarGerenciamentoUsuarios() {
         try {
             WebElement opcao = wait.until(ExpectedConditions.elementToBeClickable(userManagementOption));

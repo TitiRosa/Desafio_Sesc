@@ -172,25 +172,7 @@ public class LoginTest extends BaseTest {
 
 
 
-//    @Test
-//    public void testEditarUsuario() {
-//        HomePage homePage = new HomePage(driver);
-//        homePage.clicarConfigMenu();
-//        homePage.clicarGerenciamentoUsuarios();
 //
-//        UserManagementPage userPage = new UserManagementPage(driver);
-//        String usuario = "testeUIFinal";
-//        userPage.searchUser(usuario);
-//
-//        // Editar nome
-//        String novoNome = "Teste UI Final Editado";
-//        userPage.editUser(novoNome);
-//
-//        // Validar alteração
-//        userPage.searchUser(usuario);
-//        assertTrue(driver.getPageSource().contains(novoNome),
-//                "Usuário não foi editado corretamente");
-//    }
 //
 //    @Test
 //    public void testDeletarUsuario() {
