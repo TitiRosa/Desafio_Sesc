@@ -49,10 +49,10 @@ public class BaseTest {
         dadosUsuario = new DadosUsuario(nomeCompleto, email, cpf, nomeUsuario, senha, empresa, uf, perfil, polo, poloValue);
     }
 
-    @AfterMethod
-    public void tearDown() {
-        if (driver != null) {
-            driver.quit();
-        }
-    }
+//    @AfterMethod
+//    public void tearDown() {
+//        if (driver != null) {
+//            driver.quit();
+//        }
+//    }
 }

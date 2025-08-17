@@ -8,6 +8,8 @@ import org.openqa.selenium.support.ui.UnexpectedTagNameException;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserManagementPage {
     private WebDriver driver;
@@ -35,11 +37,17 @@ public class UserManagementPage {
     private final By ufDropdown = By.id("uf_empresa_0");
     private final By perfilDropdown = By.id("perfil_empresa_0");
     private final By poloDropdown = By.id("polo-multi_empresa_0");
-    private final By loadingOverlay = By.cssSelector(".loading-overlay");
     private final By successMessage = By.xpath("//div[@class='toast-body']");
 
     private final By searchField = By.id("search");
     private final By searchButton = By.id("searchBtn");
+    private By empresaSelect = By.id("pesquisarEmpresa");
+    private By filtrarButton = By.cssSelector("button.bt-pesquisa"); // ajuste conforme o id real
+    private By linhasUsuarios = By.cssSelector("#resultadosEdit tr");
+    private By selectPesquisarPor = By.id("pesquisarPor");
+    private By campoPesquisa = By.id("pesquisa");
+    private By salvarButton = By.cssSelector("button.btEditSalvar");
+
     private final By editButton = By.id("editBtn");
     private final By deleteButton = By.id("deleteBtn");
     private final By confirmDeleteButton = By.id("confirmDelete");
@@ -219,4 +227,143 @@ public class UserManagementPage {
     public By getSuccessMessageLocator() {
         return successMessage;
     }
+
+    // ------------MÉTODO BUSCAR USUÁRIO----------------
+
+    public void selecionarEmpresa(String nomeEmpresa) {
+        WebElement selectElement = wait.until(ExpectedConditions.elementToBeClickable(empresaSelect));
+        Select select = new Select(selectElement);
+        select.selectByVisibleText(nomeEmpresa);
+    }
+
+    public void clicarFiltrar() {
+        WebElement btnFiltrar = wait.until(ExpectedConditions.elementToBeClickable(filtrarButton));
+        btnFiltrar.click();
+    }
+
+    // Objeto para representar um usuário
+    public static class Usuario {
+        public String nome;
+        public String usuario;
+        public String email;
+        public String cpf;
+        public String empresa;
+        public String uf;
+        public boolean ativo;
+
+        public Usuario(String nome, String usuario, String email, String cpf, String empresa, String uf, boolean ativo) {
+            this.nome = nome;
+            this.usuario = usuario;
+            this.email = email;
+            this.cpf = cpf;
+            this.empresa = empresa;
+            this.uf = uf;
+            this.ativo = ativo;
+        }
+
+        @Override
+        public String toString() {
+            return nome + " | " + usuario + " | " + email + " | " + cpf + " | " + empresa + " | " + uf + " | " + (ativo ? "Ativo" : "Inativo");
+        }
+    }
+
+    private List<Usuario> listarUsuariosPorStatus(boolean statusEsperado) {
+        wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(linhasUsuarios));
+        List<WebElement> linhas = driver.findElements(linhasUsuarios);
+        List<Usuario> usuarios = new ArrayList<>();
+
+        for (WebElement linha : linhas) {
+            boolean isAtivo = "true".equals(linha.getAttribute("data-status"));
+            if (isAtivo != statusEsperado) continue; // pular linhas que não correspondem ao status esperado
+
+            List<WebElement> colunas = linha.findElements(By.tagName("td"));
+            String nome = colunas.get(0).getText();
+            String usuario = colunas.get(1).getText();
+            String email = colunas.get(2).getText();
+            String cpf = colunas.get(3).getText();
+            String empresa = colunas.get(4).getText();
+            String uf = colunas.get(5).getText();
+
+            usuarios.add(new Usuario(nome, usuario, email, cpf, empresa, uf, isAtivo));
+        }
+        return usuarios;
+    }
+
+    public List<Usuario> listarUsuariosAtivos() {
+        return listarUsuariosPorStatus(true);
+    }
+
+    public List<Usuario> listarUsuariosInativos() {
+        return listarUsuariosPorStatus(false);
+    }
+
+    // Método para pesquisar usuário por nome completo
+    public void pesquisarPorNome(String nome) {
+        wait.until(ExpectedConditions.visibilityOfElementLocated(selectPesquisarPor));
+        Select select = new Select(driver.findElement(selectPesquisarPor));
+        select.selectByValue("nome");
+
+        WebElement campo = driver.findElement(campoPesquisa);
+        campo.clear();
+        campo.sendKeys(nome);
+
+        driver.findElement(filtrarButton).click();
+    }
+
+    // Método para listar usuários exibidos na tabela
+    public List<String> listarNomesUsuarios() {
+        wait.until(ExpectedConditions.visibilityOfElementLocated(linhasUsuarios));
+        List<WebElement> linhas = driver.findElements(linhasUsuarios);
+        List<String> nomes = new ArrayList<>();
+
+        for (WebElement linha : linhas) {
+            String nomeUsuario = linha.findElement(By.xpath("td[1]")).getText();
+            nomes.add(nomeUsuario);
+        }
+        return nomes;
+    }
+
+    // -------------------- ELEMENTOS --------------------
+    private By editButtonById(String idUsuario) {
+        return By.cssSelector("a.bt-editar[data-id-usuario='" + idUsuario + "']");
+    }
+
+    public void editarEmailUsuarioPorNome(String nomeUsuario, String novoEmail) {
+
+        // 1. Buscar o usuário na tabela pelo nome
+        wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(linhasUsuarios));
+        List<WebElement> linhas = driver.findElements(linhasUsuarios);
+        String idUsuario = null;
+
+        for (WebElement linha : linhas) {
+            String nome = linha.findElement(By.xpath("td[1]")).getText();
+            if (nome.equals(nomeUsuario)) {
+                // Captura o onclick para pegar o ID
+                WebElement btnEditar = linha.findElement(By.cssSelector("a.bt-editar"));
+                String onclick = btnEditar.getAttribute("onclick"); // ex: editarUsuario('3337')
+                idUsuario = onclick.replaceAll("\\D+", ""); // pega apenas os números
+                btnEditar.click();
+                break;
+            }
+        }
+
+        if (idUsuario == null) {
+            throw new RuntimeException("Usuário não encontrado na tabela: " + nomeUsuario);
+        }
+
+        // 2. Preencher o novo e-mail no campo correto
+        By editEmailField = By.id("editEmail"); // campo correto
+        WebElement campoEmailInput = wait.until(ExpectedConditions.visibilityOfElementLocated(editEmailField));
+        campoEmailInput.clear();
+        campoEmailInput.sendKeys(novoEmail);
+
+        // 3. Clicar no botão Salvar usando JavascriptExecutor para evitar ElementClickInterceptedException
+        WebElement salvar = wait.until(ExpectedConditions.presenceOfElementLocated(salvarButton));
+        js.executeScript("arguments[0].click();", salvar);
+
+        System.out.println("E-mail do usuário '" + nomeUsuario + "' atualizado para: " + novoEmail);
+    }
+
+
+
 }
