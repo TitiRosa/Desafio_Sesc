@@ -1,0 +1,18 @@
+# Use Maven com JDK 17
+FROM maven:3.9.0-openjdk-17
+
+# Instala dependências do Chrome
+RUN apt-get update && apt-get install -y wget unzip xvfb libxi6 libgconf-2-4
+
+# Baixa e instala o Google Chrome
+RUN wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+RUN dpkg -i google-chrome-stable_current_amd64.deb || apt-get -f install -y
+
+# Define diretório de trabalho
+WORKDIR /app
+
+# Copia todos os arquivos do projeto para o container
+COPY . .
+
+# Comando padrão para rodar os testes
+CMD ["mvn", "clean", "test"]
