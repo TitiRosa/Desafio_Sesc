@@ -6,22 +6,15 @@
 - Selenium 4.x
 - TestNG
 - WebDriverManager
+- Google Chrome (via Docker)
 
 ## Pré-requisitos
-- Java instalado
-- Maven instalado
-- Google Chrome instalado
+- Docker instalado
 
-## Como Executar
+## Como Executar via Docker
 ```bash
-mvn clean test
-```
+# Build do container
+docker build -t teste-qa .
 
-## Estrutura
-- `pages`: Page Objects
-- `base`: Configuração WebDriver
-- `tests`: Testes automatizados
-
-## Observações
-- Ajustar seletores conforme HTML real do sistema.
-- Implementar métodos de criar, buscar, editar e excluir usuário.
+# Executar os testes
+docker run --rm teste-qa
