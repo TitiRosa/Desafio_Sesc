@@ -1,17 +1,12 @@
 package base;
 
 import com.github.javafaker.Faker;
-import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import pages.LoginPage;
-import base.DadosUsuario;
-
 import java.time.Duration;
 
 public class BaseTest {
@@ -45,14 +40,13 @@ public class BaseTest {
         String polo = "TESTE CANDIDATO 2";
         String poloValue = "6993";
 
-        // 2. Instanciar a classe de dados com os dados gerados
         dadosUsuario = new DadosUsuario(nomeCompleto, email, cpf, nomeUsuario, senha, empresa, uf, perfil, polo, poloValue);
     }
 
-//    @AfterMethod
-//    public void tearDown() {
-//        if (driver != null) {
-//            driver.quit();
-//        }
-//    }
+    @AfterMethod
+    public void tearDown() {
+        if (driver != null) {
+            driver.quit();
+        }
+    }
 }
