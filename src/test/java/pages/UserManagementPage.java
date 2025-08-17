@@ -48,10 +48,6 @@ public class UserManagementPage {
     private By campoPesquisa = By.id("pesquisa");
     private By salvarButton = By.cssSelector("button.btEditSalvar");
 
-    private final By editButton = By.id("editBtn");
-    private final By deleteButton = By.id("deleteBtn");
-    private final By confirmDeleteButton = By.id("confirmDelete");
-
     // -------------------- MÉTODOS --------------------
 
     public void createUser(DadosUsuario dados) {
@@ -216,15 +212,7 @@ public class UserManagementPage {
         wait.until(ExpectedConditions.elementToBeClickable(searchButton)).click();
     }
 
-    public void deleteUser() {
-        // Implementação
-    }
-
-    public void editUser(String novoNome) {
-        // Implementação
-    }
-
-    public By getSuccessMessageLocator() {
+   public By getSuccessMessageLocator() {
         return successMessage;
     }
 
@@ -340,7 +328,7 @@ public class UserManagementPage {
             if (nome.equals(nomeUsuario)) {
                 // Captura o onclick para pegar o ID
                 WebElement btnEditar = linha.findElement(By.cssSelector("a.bt-editar"));
-                String onclick = btnEditar.getAttribute("onclick"); // ex: editarUsuario('3337')
+                String onclick = btnEditar.getAttribute("onclick");
                 idUsuario = onclick.replaceAll("\\D+", ""); // pega apenas os números
                 btnEditar.click();
                 break;
@@ -352,7 +340,7 @@ public class UserManagementPage {
         }
 
         // 2. Preencher o novo e-mail no campo correto
-        By editEmailField = By.id("editEmail"); // campo correto
+        By editEmailField = By.id("editEmail");
         WebElement campoEmailInput = wait.until(ExpectedConditions.visibilityOfElementLocated(editEmailField));
         campoEmailInput.clear();
         campoEmailInput.sendKeys(novoEmail);

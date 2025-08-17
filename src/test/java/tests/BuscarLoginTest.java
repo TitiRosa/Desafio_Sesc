@@ -1,11 +1,9 @@
 package tests;
-
 import base.BaseTest;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import pages.HomePage;
 import pages.UserManagementPage;
-
 import java.util.List;
 
 public class BuscarLoginTest extends BaseTest {
