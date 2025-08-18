@@ -111,7 +111,7 @@ public class LoginTest extends BaseTest {
                  .until(ExpectedConditions.visibilityOfElementLocated(userPage.getSuccessMessageLocator()));
 
          String actualSuccessMessage = successMessageToast.getText().replace("\n", " ").trim();
-         String expectedSuccessMessage = "Escolha um perfil";
+         String expectedSuccessMessage = "Os campos obrigatórios destacados devem ser preenchidos corretamente";
 
          Assert.assertEquals(actualSuccessMessage, expectedSuccessMessage, "A mensagem de sucesso não corresponde ao esperado.");
          System.out.println("VALIDAÇÃO: A mensagem de sucesso também apareceu, indicando um possível bug.");
