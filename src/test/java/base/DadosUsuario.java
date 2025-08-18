@@ -1,7 +1,5 @@
 package base;
 
-import com.github.javafaker.Faker;
-
 public class DadosUsuario {
 
     private String nomeCompleto;
@@ -15,8 +13,7 @@ public class DadosUsuario {
     private String poloNome;
     private String poloValue;
 
-    // Construtor
-    public DadosUsuario(String nomeCompleto, String email, String cpf, String nomeUsuario, String senha,
+   public DadosUsuario(String nomeCompleto, String email, String cpf, String nomeUsuario, String senha,
                         String empresa, String uf, String perfil, String poloNome, String poloValue) {
         this.nomeCompleto = nomeCompleto;
         this.email = email;
@@ -30,7 +27,9 @@ public class DadosUsuario {
         this.poloValue = poloValue;
     }
 
-    // Crie os métodos 'get' para acessar os dados
+   public DadosUsuario() {}
+
+    // Getters
     public String getNomeCompleto() { return nomeCompleto; }
     public String getEmail() { return email; }
     public String getCpf() { return cpf; }
@@ -41,4 +40,16 @@ public class DadosUsuario {
     public String getPerfil() { return perfil; }
     public String getPoloNome() { return poloNome; }
     public String getPoloValue() { return poloValue; }
+
+    //Setters
+    public void setNomeCompleto(String nomeCompleto) { this.nomeCompleto = nomeCompleto; }
+    public void setEmail(String email) { this.email = email; }
+    public void setCpf(String cpf) { this.cpf = cpf; }
+    public void setNomeUsuario(String nomeUsuario) { this.nomeUsuario = nomeUsuario; }
+    public void setSenha(String senha) { this.senha = senha; }
+    public void setEmpresa(String empresa) { this.empresa = empresa; }
+    public void setUf(String uf) { this.uf = uf; }
+    public void setPerfil(String perfil) { this.perfil = perfil; }
+    public void setPoloNome(String poloNome) { this.poloNome = poloNome; }
+    public void setPoloValue(String poloValue) { this.poloValue = poloValue; }
 }
