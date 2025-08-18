@@ -1,5 +1,6 @@
 package tests;
 import base.BaseTest;
+import jdk.jfr.Description;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import pages.HomePage;
@@ -7,7 +8,8 @@ import pages.UserManagementPage;
 import java.util.List;
 
 public class BuscarLoginTest extends BaseTest {
-    @Test
+    @Test(priority = 1)
+    @Description("Listar Todos os Usuários")
     public void testListarUsuariosSenacComStatus() {
         UserManagementPage userPage = new UserManagementPage(driver);
         HomePage homePage = new HomePage(driver);
@@ -34,7 +36,8 @@ public class BuscarLoginTest extends BaseTest {
         }
     }
 
-    @Test
+    @Test(priority = 2)
+    @Description("Listar Usuario pelo Nome")
     public void testBuscarUsuarioPorNome() {
         UserManagementPage userPage = new UserManagementPage(driver);
         HomePage homePage = new HomePage(driver);
