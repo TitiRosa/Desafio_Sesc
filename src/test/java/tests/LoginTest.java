@@ -122,8 +122,8 @@ public class LoginTest extends BaseTest {
      }
  }
 @Test (priority = 4)
-@Description("Validar que o usuário não pode ser criado sem Email")
- public void testInserirUsuárioSemEmail() {
+@Description("Validar que o usuário não ter CPF com menos dígitos")
+ public void testInserirUsuárioComCpfInvalido() {
         String nomeCompleto = faker.name().fullName();
         String cpf = faker.number().digits(4);
         String nomeUsuario = faker.name().username();
@@ -184,8 +184,8 @@ public class LoginTest extends BaseTest {
  }
 
  @Test (priority = 5)
-@Description("Validar que o usuário não ter CPF com menos dígitos")
- public void testInserirUsuárioComCpfInvalido() {
+@Description("Validar que o usuário não pode ser criado sem Email")
+ public void testInserirUsuárioSemEmail() {
         String nomeCompleto = faker.name().fullName();
         String cpf = faker.number().digits(11);
         String nomeUsuario = faker.name().username();
