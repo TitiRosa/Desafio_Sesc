@@ -16,7 +16,7 @@ public class InativarLoginTest extends BaseTest {
         HomePage homePage = new HomePage(driver);
         homePage.clicarConfigMenu();
         homePage.clicarGerenciamentoUsuarios();
-        homePage.clicarBuscarUsuário();
+        homePage.clicarBuscarUsuario();
 
         userPage.selecionarEmpresa("SENAC");
         userPage.clicarFiltrar();
@@ -37,7 +37,7 @@ public class InativarLoginTest extends BaseTest {
         HomePage homePage = new HomePage(driver);
         homePage.clicarConfigMenu();
         homePage.clicarGerenciamentoUsuarios();
-        homePage.clicarBuscarUsuário();
+        homePage.clicarBuscarUsuario();
 
         userPage.selecionarEmpresa("SENAC");
         userPage.clicarFiltrar();

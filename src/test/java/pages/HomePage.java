@@ -47,7 +47,7 @@ public class HomePage {
             throw e;
         }
     }
-    public void clicarBuscarUsuário() {
+    public void clicarBuscarUsuario() {
         try {
             WebElement opcao = wait.until(ExpectedConditions.elementToBeClickable(buscar));
             opcao.click();

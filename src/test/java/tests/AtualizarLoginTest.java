@@ -15,7 +15,7 @@ public class AtualizarLoginTest extends BaseTest {
         HomePage homePage = new HomePage(driver);
         homePage.clicarConfigMenu();
         homePage.clicarGerenciamentoUsuarios();
-        homePage.clicarBuscarUsuário();
+        homePage.clicarBuscarUsuario();
 
         UserManagementPage userPage = new UserManagementPage(driver);
         userPage.selecionarEmpresa("SENAC");
@@ -33,7 +33,7 @@ public class AtualizarLoginTest extends BaseTest {
         HomePage homePage = new HomePage(driver);
         homePage.clicarConfigMenu();
         homePage.clicarGerenciamentoUsuarios();
-        homePage.clicarBuscarUsuário();
+        homePage.clicarBuscarUsuario();
 
         UserManagementPage userPage = new UserManagementPage(driver);
         userPage.selecionarEmpresa("SENAC");
