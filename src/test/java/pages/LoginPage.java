@@ -32,14 +32,14 @@ public class LoginPage {
     }
 
     // Realizar login
-    public void login(String username, String password) {
+    public void login(String usuario, String senha) {
         try {
             System.out.println("Preenchendo usuário e senha...");
             WebElement userField = wait.until(ExpectedConditions.visibilityOfElementLocated(usernameField));
-            userField.sendKeys(username);
+            userField.sendKeys(usuario);
 
             WebElement passField = wait.until(ExpectedConditions.visibilityOfElementLocated(passwordField));
-            passField.sendKeys(password);
+            passField.sendKeys(senha);
 
             takeScreenshot("fillLoginFields");
 

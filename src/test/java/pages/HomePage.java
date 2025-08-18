@@ -1,8 +1,6 @@
 package pages;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -17,6 +15,7 @@ public class HomePage {
     private By userManagementOption = By.id("mo-5");
     private By cadastrar = By.id("btTelaCadastrar");
     private By buscar = By.id("btTelaConsultar");
+    private By trocarSenhaButton = By.id("btnTrocarSenha");
 
 
 
@@ -78,4 +77,60 @@ public class HomePage {
             return false;
         }
     }
+    public void abrirModalTrocarSenha() {
+        try {
+            WebElement botao = wait.until(ExpectedConditions.elementToBeClickable(trocarSenhaButton));
+            botao.click();
+            System.out.println("Modal de troca de senha aberta com sucesso.");
+        } catch (Exception e) {
+            System.err.println("Erro ao abrir modal de troca de senha: " + e.getMessage());
+            throw e;
+        }
+
+    }
+
+    public void logout() {
+        try {
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+            WebElement botaoSair = wait.until(ExpectedConditions.elementToBeClickable(By.id("btSubmitExit")));
+            botaoSair.click();
+            System.out.println("Logout realizado com sucesso.");
+        } catch (Exception e) {
+            System.out.println("Erro ao tentar realizar logout.");
+            throw e;
+        }
+    }
+
+    // Método para realizar login e validar HomePage
+    public void loginNovoUsuario(String usuario, String senha) {
+        // Preencher usuário e senha
+        WebElement usuarioInput = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("username")));
+        usuarioInput.clear();
+        usuarioInput.sendKeys(usuario);
+
+        WebElement senhaInput = driver.findElement(By.id("password"));
+        senhaInput.clear();
+        senhaInput.sendKeys(senha);
+
+        WebElement loginButton = driver.findElement(By.id("loginButton"));
+        loginButton.click();
+
+        // Espera até o carregamento completo da página
+        new WebDriverWait(driver, Duration.ofSeconds(20)).until(
+                webDriver -> ((JavascriptExecutor) webDriver)
+                        .executeScript("return document.readyState").equals("complete")
+        );
+
+        // Espera invisibilidade de overlays ou toasts
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(".overlay, .toast")));
+
+        // Validação do menu de configurações
+        try {
+            WebElement configuracoes = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("configuracoes")));
+            System.out.println("HomePage carregou corretamente. Menu de Configurações visível.");
+        } catch (TimeoutException e) {
+            throw new AssertionError("Não conseguimos entrar na HomePage com o novo usuário.", e);
+        }
+    }
+
 }

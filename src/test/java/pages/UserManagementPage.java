@@ -48,21 +48,40 @@ public class UserManagementPage {
     private By campoPesquisa = By.id("pesquisa");
     private By salvarButton = By.cssSelector("button.btEditSalvar");
 
+
     // -------------------- MÉTODOS --------------------
 
-    public void createUser(DadosUsuario dados) {
-        createUserWithCompany(
-                dados.getNomeCompleto(),
-                dados.getEmail(),
-                dados.getCpf(),
-                dados.getNomeUsuario(),
-                dados.getSenha(),
-                dados.getEmpresa(),
-                dados.getUf(),
-                dados.getPerfil(),
-                dados.getPoloNome(),
-                dados.getPoloValue()
-        );
+    public void createUser2(DadosUsuario dados) {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+
+        // Preencher campos do usuário
+        driver.findElement(nomeField).sendKeys(dados.getNomeCompleto());
+        driver.findElement(emailField).sendKeys(dados.getEmail());
+        driver.findElement(cpfField).sendKeys(dados.getCpf());
+        driver.findElement(usuarioField).sendKeys(dados.getNomeUsuario());
+        driver.findElement(senhaField).sendKeys(dados.getSenha());
+
+        // Verificar se precisa adicionar empresa
+        if (driver.findElements(addCompanyButton).size() > 0) {
+            System.out.println("DEBUG: Botão 'Adicionar Empresa' encontrado. Adicionando dados da empresa...");
+            addCompanyWithDetails(
+                    dados.getEmpresa(),
+                    dados.getUf(),
+                    dados.getPerfil(),
+                    dados.getPoloNome(),
+                    dados.getPoloValue()
+            );
+        } else {
+            System.out.println("DEBUG: Botão 'Adicionar Empresa' não encontrado. Pulando dados da empresa...");
+        }
+
+        // Espera o botão Cadastrar estar clicável
+        WebElement botaoCadastrar = wait.until(ExpectedConditions.elementToBeClickable(cadastrarButton));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", botaoCadastrar);
+
+        // Esperar o toast de sucesso aparecer
+        wait.until(ExpectedConditions.visibilityOfElementLocated(successMessage));
+        System.out.println("Usuário criado com sucesso!");
     }
 
     public void createUser(String nome, String email, String cpf, String usuario, String senha,
@@ -401,7 +420,4 @@ public class UserManagementPage {
 
         return actualMessageText;
     }
-
-
-
 }

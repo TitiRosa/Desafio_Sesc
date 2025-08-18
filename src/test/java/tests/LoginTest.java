@@ -1,8 +1,11 @@
 package tests;
 
 import base.BaseTest;
+import base.DadosUsuario;
 import jdk.jfr.Description;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -10,15 +13,34 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 import pages.HomePage;
 import pages.UserManagementPage;
-
 import java.time.Duration;
-
 import static org.testng.Assert.assertTrue;
 import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.fail;
 
 public class LoginTest extends BaseTest {
 
     @Test(priority = 1)
+    @Description("Login e validação da modal de redefinir senha")
+    public void testLoginETrocaSenhaExistente() {
+        initDriver();
+        gerarDadosUsuario();
+
+        login("Teste2", "test02");
+        System.out.println("Login realizado com o usuário existente: Teste2");
+
+        // Esperar a modal de redefinir senha abrir
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+        try {
+            WebElement modal = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("ModalTrocarSenha")));
+            assertTrue(modal.isDisplayed(), "A modal de redefinir senha não está visível.");
+            System.out.println("Modal de redefinir senha aberta com sucesso.");
+        } catch (TimeoutException e) {
+            fail("Não foi possível abrir a modal de redefinir senha: " + e.getMessage());
+        }
+    }
+
+    @Test(priority = 2)
     @Description("Usuário Criado Com Sucesso")
     public void testCriarUsuarioComEmpresa() {
         HomePage homePage = new HomePage(driver);
@@ -26,20 +48,20 @@ public class LoginTest extends BaseTest {
         homePage.clicarGerenciamentoUsuarios();
         homePage.clicarCadastrar();
 
-       UserManagementPage userPage = new UserManagementPage(driver);
-          userPage.createUser(dadosUsuario);
+        UserManagementPage userPage = new UserManagementPage(driver);
+        userPage.createUser2(dadosUsuario);
 
-      WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
 
-      WebElement toastBody = wait.until(ExpectedConditions.visibilityOfElementLocated(userPage.getSuccessMessageLocator()));
+        WebElement toastBody = wait.until(ExpectedConditions.visibilityOfElementLocated(userPage.getSuccessMessageLocator()));
 
-      assertTrue(toastBody.isDisplayed(), "O toast de sucesso não foi exibido.");
+        assertTrue(toastBody.isDisplayed(), "O toast de sucesso não foi exibido.");
 
-      String expectedMessage = "O texto do toast não corresponde ao esperado.";
-      assertEquals(toastBody.getText().trim(), expectedMessage, "O texto do toast não corresponde ao esperado.");
+        String expectedMessage = "O texto do toast não corresponde ao esperado.";
+        assertEquals(toastBody.getText().trim(), expectedMessage, "O texto do toast não corresponde ao esperado.");
     }
 
- @Test (priority = 2)
+    @Test (priority = 3)
  @Description ("Validar que o usuário não pode ser criado sem um nome")
  public void testInserirUsuárioSemNome() {
         String nomeCompleto = "";
@@ -70,7 +92,7 @@ public class LoginTest extends BaseTest {
                 uf,
                 perfil,
                 polo,
-                poloValue// Valor do Polo
+                poloValue
         );
 
       WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
@@ -101,7 +123,7 @@ public class LoginTest extends BaseTest {
          throw e;
      }
  }
-@Test (priority = 3)
+@Test (priority = 4)
 @Description("Validar que o usuário não pode ser criado sem Email")
  public void testInserirUsuárioSemEmail() {
         String nomeCompleto = faker.name().fullName();
@@ -132,22 +154,19 @@ public class LoginTest extends BaseTest {
                 uf,
                 perfil,
                 polo,
-                poloValue// Valor do Polo
+                poloValue
         );
 
       WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
 
     try {
-        // Localizador para a mensagem de erro
         By errorMessageLocator = By.xpath("//div[contains(text(), 'Os campos obrigatórios')]");
 
-        // Espera a mensagem de erro aparecer
         WebElement errorMessageToast = wait.until(ExpectedConditions.visibilityOfElementLocated(errorMessageLocator));
 
         String actualErrorMessage = errorMessageToast.getText().replace("\n", " ").trim();
         String expectedErrorMessage = "Os campos obrigatórios destacados devem ser preenchidos corretamente";
 
-        // Valide a mensagem de erro
         Assert.assertEquals(actualErrorMessage, expectedErrorMessage, "A mensagem de erro não corresponde ao esperado");
         System.out.println("VALIDAÇÃO: A mensagem de erro está correta.");
 
@@ -155,10 +174,6 @@ public class LoginTest extends BaseTest {
         System.out.println("FALHA: O toast de erro não foi exibido ou a mensagem está incorreta.");
         throw e;
     }
-
-    // A validação da mensagem de sucesso pode ser opcional aqui,
-    // já que o cenário principal é a falha.
-    // Se a validação da mensagem de sucesso for necessária, pode ser feita em um bloco separado.
     try {
         WebElement successMessageToast = wait.until(ExpectedConditions.visibilityOfElementLocated(userPage.getSuccessMessageLocator()));
         String actualSuccessMessage = successMessageToast.getText().replace("\n", " ").trim();
@@ -170,40 +185,4 @@ public class LoginTest extends BaseTest {
     }
  }
 
-
-
-//
-//
-//    @Test
-//    public void testDeletarUsuario() {
-//        HomePage homePage = new HomePage(driver);
-//        homePage.clicarConfigMenu();
-//        homePage.clicarGerenciamentoUsuarios();
-//
-//        UserManagementPage userPage = new UserManagementPage(driver);
-//        String usuario = "testeUIFinal";
-//        userPage.searchUser(usuario);
-//
-//        // Deletar usuário
-//        userPage.deleteUser();
-//
-//        // Validar exclusão
-//        userPage.searchUser(usuario);
-//        Assert.assertFalse(driver.getPageSource().contains(usuario),
-//                "Usuário ainda encontrado após exclusão");
-//    }
-//
-//    @Test
-//    public void testBuscaUsuarioExistente() {
-//        HomePage homePage = new HomePage(driver);
-//        homePage.clicarConfigMenu();
-//        homePage.clicarGerenciamentoUsuarios();
-//
-//        UserManagementPage userPage = new UserManagementPage(driver);
-//        String usuario = "testeUIFinal";
-//
-//        userPage.searchUser(usuario);
-//        assertTrue(driver.getPageSource().contains(usuario),
-//                "Usuário não encontrado na busca");
-//    }
 }
