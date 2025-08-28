@@ -4,11 +4,15 @@ import com.github.javafaker.Faker;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import pages.LoginPage;
 
 import java.time.Duration;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class BaseTest {
 
@@ -17,17 +21,44 @@ public class BaseTest {
     public Faker faker;
     public DadosUsuario dadosUsuario;
 
-    // Usuário padrão
-    private final String usuarioPadrao = "lauraVieira";
-    private final String senhaPadrao = "EuTeste";
+    // Configuração padrão (parametrizável via -DusuarioPadrao, -DsenhaPadrao, -DbaseUrl)
+    private final String usuarioPadrao = System.getProperty("usuarioPadrao", "lauraVieira");
+    private final String senhaPadrao = System.getProperty("senhaPadrao", "EuTeste");
+    private final String baseUrl = System.getProperty("baseUrl", "https://conectaread-development.senacrs.com.br/Login");
 
     public BaseTest() {
         faker = new Faker();
     }
 
     protected void initDriver() {
-        driver = new ChromeDriver();
-        driver.manage().window().maximize();
+        ChromeOptions options = new ChromeOptions();
+
+        String userDataDir = null;
+        try {
+            Path tempProfile = Files.createTempDirectory("selenium-profile-");
+            userDataDir = tempProfile.toAbsolutePath().toString();
+        } catch (IOException ignored) { }
+
+        options.addArguments("--headless=new",
+                "--no-sandbox",
+                "--disable-dev-shm-usage",
+                "--disable-gpu",
+                "--window-size=1920,1080",
+                "--ignore-certificate-errors",
+                "--allow-insecure-localhost",
+                "--disable-notifications",
+                "--disable-extensions",
+                "--disable-infobars",
+                "--disable-features=IsolateOrigins,site-per-process,PrivacySandboxSettings4,CookieDeprecationMessages",
+                "--disable-blink-features=AutomationControlled");
+        options.setAcceptInsecureCerts(true);
+        options.addArguments("--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0 Safari/537.36");
+        if (userDataDir != null) {
+            options.addArguments("--user-data-dir=" + userDataDir);
+        }
+        options.setBinary("/usr/bin/google-chrome");
+
+        driver = new ChromeDriver(options);
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
         wait = new WebDriverWait(driver, Duration.ofSeconds(20));
     }
@@ -37,7 +68,7 @@ public class BaseTest {
      */
     public void login(String usuario, String senha) {
         LoginPage loginPage = new LoginPage(driver);
-        loginPage.open("https://conectaread-development.senacrs.com.br/Login");
+        loginPage.open(baseUrl);
         loginPage.login(usuario, senha);
     }
 
@@ -70,7 +101,10 @@ public class BaseTest {
     public void setUp() {
         initDriver();
 
-        loginPadrao();
+        String usarLoginPadrao = System.getProperty("usarLoginPadrao", "true");
+        if (Boolean.parseBoolean(usarLoginPadrao)) {
+            loginPadrao();
+        }
         gerarDadosUsuario();
     }
 
