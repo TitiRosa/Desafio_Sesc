@@ -28,6 +28,11 @@ public class LoginPage {
     public void open(String url) {
         System.out.println("Abrindo URL: " + url);
         driver.get(url);
+        try {
+            new WebDriverWait(driver, Duration.ofSeconds(20))
+                    .until(d -> ((JavascriptExecutor) d)
+                            .executeScript("return document.readyState").equals("complete"));
+        } catch (Exception ignored) {}
         takeScreenshot("openLoginPage");
     }
 

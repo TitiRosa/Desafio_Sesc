@@ -21,9 +21,6 @@ public class LoginTest extends BaseTest {
     @Test(priority = 1)
     @Description("Login e validação da modal de redefinir senha")
     public void testLoginETrocaSenhaExistente() {
-        initDriver();
-        gerarDadosUsuario();
-
         login("Teste2", "test02");
         System.out.println("Login realizado com o usuário existente: Teste2");
 
